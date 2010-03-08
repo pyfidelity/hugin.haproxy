@@ -1,0 +1,26 @@
+Changelog
+=========
+
+0.1dev (unreleased)
+-------------------
+* Added statusstatistics filter
+  [tesdal]
+
+* Added basic status monitor that records urls after 503
+  [tesdal]
+
+* Added userstate monitor
+  [tesdal]
+
+* Added slowest requests monitor
+  [tesdal]
+
+* Added 404 counter.
+  [tesdal]
+
+* Added readfile script that reads log file.
+  Used for performance testing.
+  [tesdal]
+
+* Initial release
+  [tesdal]
