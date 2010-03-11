@@ -36,7 +36,7 @@ class TestLogParser(unittest.TestCase):
 
     def test_basiclogline(self):
         logline = 'Nov  2 14:04:10 localhost.localdomain haproxy[2123]: ' + \
-                  '127.0.0.1:41618 [02/Nov/2009:14:04:10.382] frnt bck/inst ' + \
+                  '127.0.0.1:41618 [02/Nov/2009:14:04:10.382] frnt bck-1/inst ' + \
                   '3183/23/-1/12/11215 200 937 BCef - SCVD 1/2/3/4/0 1/30 ' + \
                   '"GET /VirtualHostBase/http/www.website.org:80/plone/VirtualHostRoot/bullet.gif HTTP/1.1"'
 
@@ -45,7 +45,7 @@ class TestLogParser(unittest.TestCase):
                   'ip': '127.0.0.1:41618', 
                   'date': '02/Nov/2009:14:04:10.382', 
                   'frontend': 'frnt',
-                  'backend': 'bck', 
+                  'backend': 'bck-1', 
                   'instance': 'inst', 
                   'Tq': 3183, 
                   'Tw': 23, 

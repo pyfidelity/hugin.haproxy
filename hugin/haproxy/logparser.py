@@ -7,7 +7,7 @@ blacklist = '(?!(%s))' % blacklist
 
 syslogdprefix = '(?:\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\+\d{4} \[\S+ \S+] )?'
 pattsyslogd = '(?:<(?P<syslog>\d+)>)?(?:\w{3}\s[\s\d]\d \d{2}:\d{2}:\d{2}(?: \S+)? (?P<pid>\S+): )?'
-pattinfo = '(?P<ip>\S+) \[(?P<date>\S+)\] (?P<frontend>\S+) (?P<backend>[\w]+)/(?P<instance>\S+) '
+pattinfo = '(?P<ip>\S+) \[(?P<date>\S+)\] (?P<frontend>\S+) (?P<backend>[\w-]+)/(?P<instance>\S+) '
 patttiming = '(?P<Tq>[-\d]+)/(?P<Tw>[-\d]+)/(?P<Tc>[-\d]+)/(?P<Tr>[-\d]+)/(?P<Tt>[-\d]+) '
 patthttp = '(?P<status>\d+) (?P<bytes>\d+) (?P<reqcookie>\S+) (?P<respcookie>\S+) '
 pattterm = '(?P<terminationevent>\S)(?P<sessionstate>\S)(?P<pc>\S)(?P<opc>\S) '
