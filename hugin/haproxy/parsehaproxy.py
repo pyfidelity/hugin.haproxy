@@ -353,7 +353,7 @@ class CSVWriter(object):
         if fields:
             self.fields = [x.strip() for x in fields.split(',')]
         else:
-            self.fields = ('instance', 'Tq', 'Tw', 'Tc', 'Tr', 'Tt', 'status', 'url', 'template')
+            self.fields = ('instance', 'Tq', 'Tw', 'Tc', 'Tr', 'Tt', 'method', 'status', 'url', 'template')
 
     def process(self):
         print "Processing log"
@@ -451,6 +451,7 @@ class Interactive(object):
                     self.timeprocess(lineno, 'Tw', data, self.queuetime)
 
                     self.strprocess(lineno, 'status', data, self.status)
+                    self.strprocess(lineno, 'method', data, self.url)
                     self.strprocess(lineno, 'instance', data, self.instance)
                     self.strprocess(lineno, 'url', data, self.url)
                     self.strprocess(lineno, 'template', data, self.template)
