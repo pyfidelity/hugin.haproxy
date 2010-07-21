@@ -18,11 +18,14 @@ class SyslogResource(Resource):
 
 class SyslogMonitor(DatagramProtocol):
 
-    def __init__(self):
+    def __init__(self, backend=None):
         self.logparser = logparser()
+        self.backend = backend
 
     def datagramReceived(self, data, (host, port)):
         data = self.logparser(data)
-        if data is not None and data.get('backend', None) == 'zope':
+        if data is not None:
+            if self.backend and data.get('backend') != self.backend:
+                return
             for f in keyedfilters.values():
                 f.process(data)
