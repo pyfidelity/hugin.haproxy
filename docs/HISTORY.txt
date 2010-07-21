@@ -3,6 +3,10 @@ Changelog
 
 0.1dev (unreleased)
 -------------------
+
+* Add entry-point for generating a stand-alone `readfile` script.
+  [witsch]
+
 * Added statusstatistics filter
   [tesdal]
 

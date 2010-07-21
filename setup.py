@@ -26,7 +26,8 @@ setup(name='hugin.haproxy',
           'Twisted',
           # -*- Extra requirements: -*-
       ],
-      entry_points="""
-      # -*- Entry points: -*-
+      entry_points = """
+          [console_scripts]
+          readfile = hugin.haproxy.readfile:main
       """,
       )
