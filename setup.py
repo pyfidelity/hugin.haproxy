@@ -29,7 +29,6 @@ setup(name='hugin.haproxy',
       entry_points = """
           [console_scripts]
           readfile = hugin.haproxy.readfile:main
-      [console_scripts]
-      parsehaproxy = hugin.haproxy.parsehaproxy:main
+          parsehaproxy = hugin.haproxy.parsehaproxy:main
       """,
       )
