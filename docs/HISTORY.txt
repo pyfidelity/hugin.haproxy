@@ -4,6 +4,9 @@ Changelog
 0.1dev (unreleased)
 -------------------
 
+* Allow `readfile` to read from stdin if no filename was given.
+  [witsch]
+
 * Add entry-point for generating a stand-alone `readfile` script.
   [witsch]
 

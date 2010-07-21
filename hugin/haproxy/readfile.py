@@ -10,6 +10,7 @@ from hugin.haproxy.filters import statusstats
 
 from hugin.haproxy import keyedfilters
 
+from fileinput import input
 from optparse import OptionParser
 
 import logging
@@ -38,9 +39,6 @@ def main():
     parser.add_option('-m', '--muninfilters', action='store',
                       help='Comma separated list of filters to use with perhour.')
     options, args = parser.parse_args()
-
-    if not options.filename:
-        parser.error('You have to specify a filename')
 
     if options.verbose and options.quiet:
         parser.error("Can't specify --verbose and --quiet at the same time")
@@ -77,7 +75,7 @@ def main():
                 print k, ',\t'.join(['%s:%d' % (k,v) for k,v in f.stats().items()])
 
 
-    f = open(options.filename)
+    f = input(filter(None, [options.filename]))
     start = time.time()
     count = 0
     hour = 0
