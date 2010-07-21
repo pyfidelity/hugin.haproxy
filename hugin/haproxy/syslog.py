@@ -23,6 +23,6 @@ class SyslogMonitor(DatagramProtocol):
 
     def datagramReceived(self, data, (host, port)):
         data = self.logparser(data)
-        if data is not None:
+        if data is not None and data.get('backend', None) == 'zope':
             for f in keyedfilters.values():
                 f.process(data)
