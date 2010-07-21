@@ -536,7 +536,7 @@ def main():
         parser.error("Can't specify --verbose and --quiet at the same time")
 
     if options.monitor and (options.interactive or options.output):
-        parser.error("Monitor mode can not be used with other options")
+        parser.error("Monitor mode can not be combined with interactive or csv modes")
 
     if options.output and options.interactive:
         parser.error("Can't specify CSV output and interactive at the same time")
