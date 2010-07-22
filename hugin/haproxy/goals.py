@@ -2,6 +2,7 @@ from csv import DictWriter
 import datetime
 import itertools
 import os
+import warnings
 
 from hugin.haproxy.filters.timingstats import TimingStatistics
 from hugin.haproxy.logparser import logparser, DATE_FORMAT
@@ -66,10 +67,10 @@ class GoalAnalyser(object):
     
     def __call__(self):
         iterable = itertools.imap(self.parse, self.log)
-        
         days = itertools.groupby(iterable, self.getDateForLine)
         
         for day, iterable in days:
+
             parsed, destination = itertools.tee(iterable)
             destination = itertools.imap(self.filterForLine, destination)
         
@@ -80,6 +81,11 @@ class GoalAnalyser(object):
         
             for name in self.filters:
                 stats = self.statscounters[name].stats()
+                if not any(stats.values()):
+                    # We have no data at all, skip this
+                    warnings.warn("No data for %s on %s" % (name, day.isoformat()))
+                    continue
+                stats['date'] = day.isoformat()
                 self.outputs[name].writerow(stats)
             
         self.finish()

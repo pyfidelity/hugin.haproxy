@@ -51,9 +51,9 @@ class TestMultipleTargetsInConfiguration(unittest.TestCase):
         
         self.analyser = GoalAnalyser(BytesIO(SAMPLE_LOG), location=tempfile.gettempdir(), urls=configs)
 
-    def test_stats_counter_instantiated(self):
-        self.assertEqual(len(self.analyser.statscounters), 1)
-        self.assertEqual(self.analyser.statscounters.keys(), ["home"])
+    def test_all_counters_initialised(self):
+        self.assertEqual(len(self.analyser.statscounters), 3)
+        self.assertEqual(self.analyser.statscounters.keys(), ["home", "register", "news"])
 
     def test_sample_filtered_to_home(self):
         parsed = self.analyser.parse(SAMPLE_LOG)
@@ -64,6 +64,14 @@ class TestMultipleTargetsInConfiguration(unittest.TestCase):
         location = os.path.join(tempfile.gettempdir(), 'home_stats.csv')
         output = open(location, 'r').readlines()
         self.assertEqual(len(output), 2) # Header row and one day
+        
+        location = os.path.join(tempfile.gettempdir(), 'register_stats.csv')
+        output = open(location, 'r').readlines()
+        self.assertEqual(len(output), 1) # Header row only
+         
+        location = os.path.join(tempfile.gettempdir(), 'news_stats.csv')
+        output = open(location, 'r').readlines()
+        self.assertEqual(len(output), 1) # Header row only
 
 
 class TestSummary(unittest.TestCase):
