@@ -8,6 +8,8 @@ from hugin.haproxy.goals import GoalAnalyser
 
 SAMPLE_LOG = """Jul 21 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" """
 
+BOGUS_LOG = """Jul 21 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/wibble/wobble/woo HTTP/1.0" """
+
 LONGER_LOG = """Jul 21 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
 Jul 22 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [22/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
 Jul 23 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [23/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
@@ -42,6 +44,19 @@ class TestSimpleConfiguration(unittest.TestCase):
         output = open(location, 'r').readlines()
         self.assertEqual(len(output), 2) # Header row and one day
 
+class TestUnknownLogEntry(unittest.TestCase):
+    
+    def setUp(self):
+        configs = { 'home':('GET', re.compile("^/?$")), }
+        
+        self.analyser = GoalAnalyser(BytesIO(BOGUS_LOG), location=tempfile.gettempdir(), urls=configs)
+    
+    def test_empty_output_without_errors(self):
+        self.analyser()
+        location = os.path.join(tempfile.gettempdir(), 'home_stats.csv')
+        output = open(location, 'r').readlines()
+        self.assertEqual(len(output), 1)
+
 class TestMultipleTargetsInConfiguration(unittest.TestCase):
 
     def setUp(self):
@@ -72,7 +87,6 @@ class TestMultipleTargetsInConfiguration(unittest.TestCase):
         location = os.path.join(tempfile.gettempdir(), 'news_stats.csv')
         output = open(location, 'r').readlines()
         self.assertEqual(len(output), 1) # Header row only
-
 
 class TestSummary(unittest.TestCase):
 

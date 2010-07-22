@@ -77,7 +77,11 @@ class GoalAnalyser(object):
             classified = itertools.izip(destination, parsed)
         
             for destination, entry in classified:
-                self.statscounters[destination].process(entry)
+                try:
+                    self.statscounters[destination].process(entry)
+                except KeyError:
+                    warnings.warn("%s for %s is not classified" % (entry['method'], entry['url']))
+                    continue
         
             for name in self.filters:
                 stats = self.statscounters[name].stats()
