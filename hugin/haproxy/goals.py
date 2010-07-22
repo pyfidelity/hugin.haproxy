@@ -55,6 +55,9 @@ class GoalAnalyser(object):
         return self._outputs
     
     def filterForLine(self, line):
+        """Take a parsed log line and return the rule name that it matches 
+        or None if none match."""
+        
         self.getDateForLine(line)
         for name in self.statscounters.keys():
             condition = self.urls[name]
@@ -62,22 +65,26 @@ class GoalAnalyser(object):
                 return name
     
     def getDateForLine(self, line):
+        """Return a python datetime accurate to the date level for the day 
+        this line took place on."""
         date = datetime.datetime.strptime(line['date'], DATE_FORMAT)
         return date.date()
     
     def __call__(self):
+        # We know the dates are in order, so parse them and groupby their date
         iterable = itertools.imap(self.parse, self.log)
         days = itertools.groupby(iterable, self.getDateForLine)
         
         for day, iterable in days:
-
+            # Duplicate the iterator for each day, find the responsible rule 
+            # name and turn it into a dictionary.iteritems() style iterator.
             parsed, destination = itertools.tee(iterable)
             destination = itertools.imap(self.filterForLine, destination)
-        
             classified = itertools.izip(destination, parsed)
         
             for destination, entry in classified:
                 try:
+                    # Pass the line onto the underlying stats class
                     self.statscounters[destination].process(entry)
                 except KeyError:
                     warnings.warn("%s for %s is not classified" % (entry['method'], entry['url']))
@@ -99,6 +106,3 @@ class GoalAnalyser(object):
             f.flush()
             os.fsync(f.fileno())
             f.close()
-        
-        
-        
