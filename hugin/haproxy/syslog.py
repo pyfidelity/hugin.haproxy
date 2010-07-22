@@ -2,7 +2,6 @@ from hugin.haproxy.logparser import logparser
 from hugin.haproxy import keyedfilters
 
 from twisted.internet.protocol import DatagramProtocol
-from twisted.internet import reactor
 from twisted.web.resource import Resource
 
 
