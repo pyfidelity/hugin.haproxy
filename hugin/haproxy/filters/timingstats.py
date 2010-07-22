@@ -1,3 +1,5 @@
+import numpy
+
 from hugin.haproxy import registerFilter
 
 class TimingAverage(object):
@@ -54,22 +56,24 @@ class TimingStatistics(object):
             pass
 
     def stats(self, reset=True):
-        stats = self._stats
+        stats = numpy.array(self._stats)
 
         if reset:
             self._stats = []
 
-        ten = median = ninety = avg = max_ = 0
+        ten = median = eighty = ninety = avg = max_ = stddev = 0
 
-        if stats:
+        if len(stats):
             length = len(stats)
             stats.sort()
             avg = sum(stats)/length
             max_ = stats[-1]
             ten = stats[min(int(length*10.0/100), length-1)]
             median = stats[min(int(length*50.0/100), length-1)]
+            eighty = stats[min(int(length*80.0/100), length-1)]
             ninety = stats[min(int(length*90.0/100), length-1)]
+            stddev = numpy.std(stats)
 
-        return dict(ten=ten, median=median, ninety=ninety, avg=avg, max=max_)
+        return dict(ten=ten, median=median, eighty=eighty, ninety=ninety, avg=avg, max=max_, stddev=stddev)
 
 registerFilter('timingstatistics', TimingStatistics())

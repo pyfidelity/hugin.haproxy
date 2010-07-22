@@ -24,6 +24,7 @@ setup(name='hugin.haproxy',
       install_requires=[
           'setuptools',
           'Twisted',
+          'numpy',
           # -*- Extra requirements: -*-
       ],
       entry_points = """

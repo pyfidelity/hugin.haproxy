@@ -4,6 +4,12 @@ Changelog
 0.1dev (unreleased)
 -------------------
 
+* Use numpy for the timing stats and add some more values.
+  [MatthewWilkes]
+
+* Add entry-point for the stand-alone `parsehaproxy` script.
+  [MatthewWilkes]
+
 * Allow `readfile` to read from stdin if no filename was given.
   [witsch]
 

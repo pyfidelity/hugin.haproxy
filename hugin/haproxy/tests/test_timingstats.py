@@ -31,10 +31,10 @@ class TestStatistics(unittest.TestCase):
         self.stats = TimingStatistics()
 
     def test_basic_empty(self):
-        self.failUnlessEqual(self.stats.stats(), dict(ten=0,median=0,ninety=0,avg=0,max=0))
+        self.failUnlessEqual(self.stats.stats(), dict(ten=0,median=0,ninety=0,avg=0,max=0,eighty=0,stddev=0))
 
         self.stats.process(dict())
-        expect = dict(ten=0,median=0,ninety=0,avg=0,max=0)
+        expect = dict(ten=0,median=0,ninety=0,avg=0,max=0,eighty=0,stddev=0)
         res = self.stats.stats()
         self.failUnlessEqual(res, expect, 
                              ', '.join(['%s: %s != %s' % (k,v,expect[k]) for k,v in res.items() if expect[k] != v]))
@@ -42,7 +42,7 @@ class TestStatistics(unittest.TestCase):
     def test_basic_reset(self):
         # Test the most basic numbers and reset function
         self.stats.process(dict(Tt=3))
-        expect = dict(ten=3,median=3,ninety=3,avg=3,max=3)
+        expect = dict(ten=3,median=3,ninety=3,avg=3,max=3,eighty=3,stddev=0)
         res = self.stats.stats(reset=False)
         self.failUnlessEqual(res, expect, 
                              ', '.join(['%s: %s != %s' % (k,v,expect[k]) for k,v in res.items() if expect[k] != v]))
@@ -54,7 +54,13 @@ class TestStatistics(unittest.TestCase):
     def test_statistics(self):
         for i in range(1,12):
             self.stats.process(dict(Tt=i))
-        expect = dict(ten=2,median=6,ninety=10,avg=6,max=11)
+        expect = dict(ten=2,median=6,ninety=10,avg=6,max=11,eighty=9,stddev=3.16227766017)
         res = self.stats.stats()
+        
+        # The stddev here is a float, so we handle it seperately from the rest
+        self.assertAlmostEqual(expect['stddev'], res['stddev'])
+        del res['stddev']
+        del expect['stddev']
+        
         self.failUnlessEqual(res, expect, 
                              ', '.join(['%s: %s != %s' % (k,v,expect[k]) for k,v in res.items() if expect[k] != v]))
