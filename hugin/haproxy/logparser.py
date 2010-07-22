@@ -15,6 +15,8 @@ pattconn = '(?P<actconn>\d+)/(?P<feconn>\d+)/(?P<beconn>\d+)/(?P<srv_conn>\d+)(/
 pattqueue = '(?P<srv_queue>\d+)/(?P<listener_queue>\d+) '
 patturl = '"(?P<method>\S+) (?:/VirtualHostBase/.*/VirtualHostRoot)?' + blacklist + '(?P<url>\S*/(?P<template>[^/][^\?]+)?)?(?:\?\S*)? \S+'
 
+DATE_FORMAT = "%d/%b/%Y:%H:%M:%S.%f"
+
 class logparser(object):
     def __init__(self):
         self.pattern = syslogdprefix + pattsyslogd + pattinfo + patttiming + patthttp + pattterm + pattconn + pattqueue + patturl + '.*'
