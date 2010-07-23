@@ -73,6 +73,8 @@ class GoalAnalyser(object):
     def __call__(self):
         # We know the dates are in order, so parse them and groupby their date
         iterable = itertools.imap(self.parse, self.log)
+        iterable = itertools.ifilter(lambda x: x is not None, iterable)
+        
         days = itertools.groupby(iterable, self.getDateForLine)
         
         for day, iterable in days:
