@@ -50,6 +50,18 @@ class TestSimpleConfiguration(unittest.TestCase):
         location = os.path.join(tempfile.gettempdir(), 'home_stats.csv')
         output = open(location, 'r').readlines()
         self.assertEqual(len(output), 2) # Header row and one day
+    
+    def test_historical_data_is_left_intact(self):
+        location = os.path.join(tempfile.gettempdir(), 'home_stats.csv')
+        prep = open(location, 'w')
+        prep.write("""date,median,ninety,stddev,ten,max,avg,eighty
+2009-01-01,331,396,116.895965143,122,396,283,396
+2009-01-02,396,396,151.0,94,396,245,396""")
+        
+        self.analyser()
+        output = open(location, 'r').readlines()
+        self.assertEqual(len(output), 4) # Header row, two historical, one new
+    
 
 class TestInvalidLogEntry(unittest.TestCase):
     
