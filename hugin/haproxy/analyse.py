@@ -1,7 +1,7 @@
 from hugin.haproxy.goals import GoalAnalyser
 from hugin.haproxy.configuration import FilterConfig
 from argparse import ArgumentParser
-from fileinput import input
+from fileinput import input, hook_compressed
 from re import compile
 
 
@@ -16,5 +16,5 @@ def main():
     config.read(args.config)
     urls = config.urls()
 
-    analyser = GoalAnalyser(input(args.log), location=args.directory, urls=urls)
+    analyser = GoalAnalyser(input(args.log, openhook=hook_compressed), location=args.directory, urls=urls)
     analyser()
