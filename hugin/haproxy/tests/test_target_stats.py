@@ -73,13 +73,26 @@ class TestSimpleConfiguration(TempdirAvailable):
         prep = open(location, 'w')
         prep.write("""date,median,ninety,stddev,ten,max,avg,eighty
 2009-01-01,331,396,116.895965143,122,396,283,396
-2009-01-02,396,396,151.0,94,396,245,396""")
+2009-01-02,396,396,151.0,94,396,245,396
+""")
         prep.close()
         del prep
         
         self.analyser()
         output = open(location, 'r').readlines()
         self.assertEqual(len(output), 4) # Header row, two historical, one new
+
+    def test_multiple_runs_dont_cause_dupes(self):
+        self.analyser()
+        del self.analyser
+        
+        self.analyser = GoalAnalyser(BytesIO(SAMPLE_LOG), location=self.location, urls={ 'home':('GET', re.compile("^/?$")), })
+        self.analyser()
+        
+        location = os.path.join(self.location, 'home_stats.csv')
+        output = open(location, 'r').readlines()
+        self.assertEqual(len(output), 2) # Header row, one new
+
     
     def test_csv_is_in_a_valid_format(self):
         self.analyser()

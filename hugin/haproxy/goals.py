@@ -19,6 +19,7 @@ class GoalAnalyser(object):
         self._statscounters = {}
         self._outputs = {}
         self._files = {}
+        self._existing_dates = {}
         
         self.parse = logparser()
 
@@ -36,14 +37,15 @@ class GoalAnalyser(object):
                 # We are going to add to an existing file.
                 backing = open(location, 'r+')
                 reader = DictReader(backing)
-                existing_dates = [r['date'] for r in reader]
+                self._existing_dates[name] = [r['date'] for r in reader]
             else:
                 backing = open(location, 'w')
             
             self._files[name] = backing
                     
             writer = DictWriter(backing, keys)
-            writer.writerow(dict(zip(keys, keys)))
+            if self._existing_dates.get(name, None) is None:
+                writer.writerow(dict(zip(keys, keys)))
             
             self._outputs[name] = writer
 
@@ -96,6 +98,8 @@ class GoalAnalyser(object):
             for destination, entry in classified:
                 try:
                     # Pass the line onto the underlying stats class
+                    if day.isoformat() in self._existing_dates.get(destination, []):
+                        continue
                     self.statscounters[destination].process(entry)
                 except KeyError:
                     warnings.warn("%s for %s is not classified" % (entry['method'], entry['url']))
