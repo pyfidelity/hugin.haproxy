@@ -25,11 +25,13 @@ setup(name='hugin.haproxy',
           'setuptools',
           'Twisted',
           'numpy',
+          'argparse',
           # -*- Extra requirements: -*-
       ],
       entry_points = """
           [console_scripts]
           readfile = hugin.haproxy.readfile:main
           parsehaproxy = hugin.haproxy.parsehaproxy:main
+          analyse = hugin.haproxy.analyse:main
       """,
       )
