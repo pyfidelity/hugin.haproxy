@@ -22,6 +22,11 @@ match = ^/$
         self.assertEqual(len(self.parser._sections), 1)
                 
     def test_duplicate_rules_one_section(self):
+        # We've decided we don't care about this for now. If we ever need
+        # to gather stats on things that need multiple HTTP methods reinstate
+        # this, otherwise just use regex's (foo|bar) syntax.
+        return NotImplemented
+        
         config = BytesIO("""
 [home]
 method = GET
