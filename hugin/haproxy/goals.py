@@ -1,4 +1,4 @@
-from csv import DictWriter
+from csv import DictWriter, DictReader
 import datetime
 import itertools
 import os
@@ -21,22 +21,27 @@ class GoalAnalyser(object):
         self._files = {}
         
         self.parse = logparser()
-        
-        self._instantiateFilters()
-        self._instantiateCSVWriters()
 
     def _instantiateFilters(self):
         for name in self.urls:
             self._statscounters[name] = TimingStatistics() 
 
     def _instantiateCSVWriters(self):
+        keys = ['date', ] + TimingStatistics().stats().keys()
+
         for name in self.urls:
             location = os.path.join(self.dir, '%s_stats.csv' % name)
-            backing = open(location, 'w')
+
+            if os.path.exists(location):
+                # We are going to add to an existing file.
+                backing = open(location, 'r+')
+                reader = DictReader(backing)
+                existing_dates = [r['date'] for r in reader]
+            else:
+                backing = open(location, 'w')
+            
             self._files[name] = backing
-            
-            keys = ['date', ] + TimingStatistics().stats().keys()
-            
+                    
             writer = DictWriter(backing, keys)
             writer.writerow(dict(zip(keys, keys)))
             
@@ -71,6 +76,10 @@ class GoalAnalyser(object):
         return date.date()
     
     def __call__(self):
+        
+        self._instantiateFilters()
+        self._instantiateCSVWriters()
+        
         # We know the dates are in order, so parse them and groupby their date
         iterable = itertools.imap(self.parse, self.log)
         iterable = itertools.ifilter(lambda x: x is not None, iterable)
