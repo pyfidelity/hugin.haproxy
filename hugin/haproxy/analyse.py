@@ -1,4 +1,5 @@
 from hugin.haproxy.goals import GoalAnalyser
+from hugin.haproxy.configuration import FilterConfig
 from argparse import ArgumentParser
 from fileinput import input
 from re import compile
@@ -11,10 +12,9 @@ def main():
     parser.add_argument('log', nargs='*', help='haproxy log files')
     args = parser.parse_args()
 
-    # TODO: use real config parser here...
-    urls = dict(
-        livesearch=('GET', compile('/livesearch_reply?'))
-    )
+    config = FilterConfig()
+    config.read(args.config)
+    urls = config.urls()
 
     analyser = GoalAnalyser(input(args.log), location=args.directory, urls=urls)
     analyser()
