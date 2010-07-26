@@ -51,10 +51,14 @@ class TestSimpleConfiguration(TempdirAvailable):
         self.analyser = GoalAnalyser(BytesIO(SAMPLE_LOG), location=self.location, urls=configs)
 
     def test_stats_counter_instantiated(self):
+        self.analyser()
+        
         self.assertEqual(len(self.analyser.statscounters), 1)
         self.assertEqual(self.analyser.statscounters.keys(), ["home"])
 
     def test_sample_filtered_to_home(self):
+        self.analyser()
+        
         parsed = self.analyser.parse(SAMPLE_LOG)
         self.assertEqual(self.analyser.filterForLine(parsed), 'home')
     
@@ -70,6 +74,8 @@ class TestSimpleConfiguration(TempdirAvailable):
         prep.write("""date,median,ninety,stddev,ten,max,avg,eighty
 2009-01-01,331,396,116.895965143,122,396,283,396
 2009-01-02,396,396,151.0,94,396,245,396""")
+        prep.close()
+        del prep
         
         self.analyser()
         output = open(location, 'r').readlines()
@@ -127,10 +133,14 @@ class TestMultipleTargetsInConfiguration(TempdirAvailable):
         self.analyser = GoalAnalyser(BytesIO(SAMPLE_LOG), location=self.location, urls=configs)
 
     def test_all_counters_initialised(self):
+        self.analyser()
+        
         self.assertEqual(len(self.analyser.statscounters), 3)
         self.assertEqual(self.analyser.statscounters.keys(), ["home", "register", "news"])
 
     def test_sample_filtered_to_home(self):
+        self.analyser()
+        
         parsed = self.analyser.parse(SAMPLE_LOG)
         self.assertEqual(self.analyser.filterForLine(parsed), 'home')
     
