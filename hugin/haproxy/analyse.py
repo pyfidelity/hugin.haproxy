@@ -1,6 +1,7 @@
 from hugin.haproxy.goals import GoalAnalyser
 from hugin.haproxy.configuration import FilterConfig
 from argparse import ArgumentParser
+from warnings import filterwarnings
 from fileinput import input, hook_compressed
 from csv import writer
 from os.path import join
@@ -8,10 +9,14 @@ from os.path import join
 
 def main():
     parser = ArgumentParser(description='Analyse haproxy logs.')
+    parser.add_argument('-q', '--quiet', help='suppress warnings', action='store_true')
     parser.add_argument('-d', '--directory', help='output directory', default='.')
     parser.add_argument('config', help='name of the configuration file')
     parser.add_argument('log', nargs='*', help='haproxy log files')
     args = parser.parse_args()
+
+    if args.quiet:
+        filterwarnings('ignore')
 
     config = FilterConfig()
     config.read(args.config)
