@@ -39,6 +39,26 @@ Jul 22 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [22/Jul/2010:17:25:59.4
 Jul 23 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [23/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
 Jul 24 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [24/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/1212/1212 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" """
 
+MULTI_WEEK_LOG = """Jul 01 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [01/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/900 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
+Jul 02 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [02/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/900 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0"
+Jul 03 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [03/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/900 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0"
+Jul 04 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [04/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/900 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
+Jul 05 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [05/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/900 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
+Jul 06 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [06/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/900 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
+Jul 07 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [07/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/900 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0"
+Jul 08 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [08/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/900 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0"
+Jul 09 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [09/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/900 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0"
+Jul 10 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [10/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/900 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
+Jul 11 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [11/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/900 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
+Jul 12 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [12/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/900 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
+Jul 13 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [13/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/100 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
+Jul 14 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [14/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/100 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0"
+Jul 15 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [15/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/100 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0"
+Jul 16 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [16/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/100 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
+Jul 17 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [17/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/100 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
+Jul 18 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [18/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/100 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
+Jul 19 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [19/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/100 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" """
+
 
 class TempdirAvailable(unittest.TestCase):
     
@@ -245,3 +265,32 @@ class TestSummary(TempdirAvailable):
         location = os.path.join(self.location, 'home_stats.csv')
         output = open(location, 'r').readlines()
         self.assertEqual(len(output), 5) # Header row and one day
+
+class TestHistogram(TempdirAvailable):
+    
+    def setUp(self):
+        TempdirAvailable.setUp(self)
+        configs = { 'all':('GET', re.compile("^/(.*)$")), }
+        self.analyser = GoalAnalyser(BytesIO(MULTI_WEEK_LOG), location=self.location, urls=configs)
+
+    def read_csv(self, name):
+        location = os.path.join(self.location, name)
+        return list(DictReader(open(location, 'r')))
+
+    def test_stats_have_rolling_averages(self):
+        self.analyser()
+        values = self.read_csv('all_stats.csv')
+        self.assertEqual(len(values), 19) # the log covers 19 days
+        self.failUnless("date" in values[0])
+        self.failUnless("1d80" in values[0])
+        self.failUnless("7d80" in values[0])
+        self.failUnless("1avg" in values[0])
+        self.failUnless("7avg" in values[0])
+    
+    def test_last_rolling_average_only_contains_last_seven_days(self):
+        self.analyser()
+        values = self.read_csv('all_stats.csv')
+        self.assertEqual(values[-1]['7avg'], '100')
+        self.assertEqual(values[-1]['7stddev'], '0.0')
+        
+    
