@@ -81,7 +81,7 @@ class GoalAnalyser(object):
             self._statscounters[name] = DailyStatistics(self.avgs) 
 
     def _instantiateCSVWriters(self):
-        keys = ['date', ] + DailyStatistics(self.avgs).stats().keys()
+        keys = ['date', ] + sorted(DailyStatistics(self.avgs).stats().keys())
 
         for name in self.urls:
             location = os.path.join(self.dir, '%s_stats.csv' % name)
