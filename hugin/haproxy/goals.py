@@ -4,6 +4,8 @@ import itertools
 import os
 import warnings
 
+from paste.util.multidict import MultiDict
+
 from hugin.haproxy.filters.timingstats import TimingStatistics
 from hugin.haproxy.logparser import logparser, DATE_FORMAT
 
@@ -16,7 +18,7 @@ class GoalAnalyser(object):
         self.log = log
         self.urls = urls
         self.dir = location
-        self._statscounters = {}
+        self._statscounters = MultiDict()
         self._outputs = {}
         self._files = {}
         self._existing_dates = {}

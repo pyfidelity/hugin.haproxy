@@ -1,7 +1,12 @@
 from ConfigParser import RawConfigParser
 import re
 
+from paste.util.multidict import MultiDict
+
 class FilterConfig(RawConfigParser, object):
+    
+    def __init__(self):
+        RawConfigParser.__init__(self, dict_type=MultiDict)
     
     def urls(self):
         output = self._dict()

@@ -1,3 +1,4 @@
+from paste.util.multidict import MultiDict
 from io import BytesIO
 import re
 import unittest
@@ -52,7 +53,7 @@ match = ^/$
         regex = re.compile("^")
         self.assertEqual(type(match), REGEX_TYPE)
     
-    def test_urls_method_returns_dict_of_tuples(self):
+    def test_urls_method_returns_multidict_of_tuples(self):
         config = BytesIO("""
 [home]
 method = GET
@@ -60,8 +61,26 @@ match = ^/$
 """)
         self.parser.readfp(config)
         urls = self.parser.urls()
-                
+        
+        self.assertEqual(self.parser.urls().__class__, MultiDict)
+            
         self.assertEqual(urls.keys(), ['home'])
         self.assertEqual(urls['home'][0], "GET")
-        self.assertEqual(type(urls['home'][1]), REGEX_TYPE)
-        
+        self.assertEqual(type(urls['home'][1]), REGEX_TYPE)    
+    
+    def test_ordering_preserved(self):
+        config = BytesIO("""
+
+[search_in_foo]
+method = GET
+match = ^(.*)foo(.*)/home$
+
+[search]
+method = GET
+match = ^(.*)/search$
+
+""")
+        self.parser.readfp(config)
+                
+        self.assertEqual(self.parser.sections(), ['search_in_foo', 'search'])
+        self.assertEqual(len(self.parser._sections), 2)

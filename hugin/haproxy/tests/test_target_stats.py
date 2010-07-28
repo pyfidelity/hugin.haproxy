@@ -6,6 +6,8 @@ from io import BytesIO
 import os
 import shutil
 
+from paste.util.multidict import MultiDict
+
 from hugin.haproxy.goals import GoalAnalyser
 
 SAMPLE_LOG = """Jul 21 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" """
@@ -17,6 +19,11 @@ INVALID_LOG = """Jul 21 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Ju
 
 wibble wobble wooYAY!
 """
+
+NEWS_AND_GENERAL_LOG = """Jul 21 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/sdf HTTP/1.0" 
+Jul 21 17:26:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:26:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/news/sdfs HTTP/1.0" 
+Jul 21 17:27:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:27:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/news/fd HTTP/1.0" 
+Jul 21 17:28:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:28:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/gsdew HTTP/1.0" """
 
 
 LONGER_LOG = """Jul 21 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
@@ -170,6 +177,51 @@ class TestMultipleTargetsInConfiguration(TempdirAvailable):
         location = os.path.join(self.location, 'news_stats.csv')
         output = open(location, 'r').readlines()
         self.assertEqual(len(output), 1) # Header row only
+
+
+class TestOrderingOfRulesSetsPrecedent(TempdirAvailable):
+    """These tests need to use a multidict to preserve ordering.  See 
+    test_config for proof that's what our config parser gives us."""
+    
+    def setUp(self):
+        TempdirAvailable.setUp(self)
+
+    def test_catch_all_last(self):
+        """If the all rule is processed second some things will go into news"""
+        configs = MultiDict()
+        configs['news'] = ('GET', re.compile("^/news"))
+        configs['all'] = ('GET', re.compile("^/(.*)$"))
+        
+        self.analyser = GoalAnalyser(BytesIO(NEWS_AND_GENERAL_LOG), location=self.location, urls=configs)
+
+        self.analyser()
+        location = os.path.join(self.location, 'all_stats.csv')
+        output = open(location, 'r').readlines()
+        self.assertEqual(len(output), 2) # Header row and one day
+        
+        location = os.path.join(self.location, 'news_stats.csv')
+        output = open(location, 'r').readlines()
+        self.assertEqual(len(output), 2) # Header row and one day
+
+    def test_catch_all_first(self):
+        """If the all rule is processed first it will use all the data and 
+        other stats files will be empty."""
+        configs = MultiDict()
+        configs['all'] = ('GET', re.compile("^/(.*)$"))
+        configs['news'] = ('GET', re.compile("^/news"))
+        
+        self.analyser = GoalAnalyser(BytesIO(NEWS_AND_GENERAL_LOG), location=self.location, urls=configs)
+
+        self.analyser()
+        location = os.path.join(self.location, 'all_stats.csv')
+        output = open(location, 'r').readlines()
+        self.assertEqual(len(output), 2) # Header row and one day
+        
+        location = os.path.join(self.location, 'news_stats.csv')
+        output = open(location, 'r').readlines()
+        self.assertEqual(len(output), 1) # Header row only - no stats
+
+
 
 class TestSummary(TempdirAvailable):
 

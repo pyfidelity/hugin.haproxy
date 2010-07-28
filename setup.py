@@ -26,6 +26,7 @@ setup(name='hugin.haproxy',
           'Twisted',
           'numpy',
           'argparse',
+          'Paste'
           # -*- Extra requirements: -*-
       ],
       entry_points = """
