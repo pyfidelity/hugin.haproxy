@@ -293,4 +293,13 @@ class TestHistogram(TempdirAvailable):
         self.assertEqual(values[-1]['7avg'], '100')
         self.assertEqual(values[-1]['7stddev'], '0.0')
         
-    
+    def test_percentiles_drop_after_performance_improvement(self):
+        self.analyser()
+        values = self.read_csv('all_stats.csv')
+        # 90% drops at last day
+        self.assertEqual(values[-1]['7d90'], '100')
+        self.assertEqual(values[-2]['7d90'], '900')
+        # 80% drops one day earlier
+        self.assertEqual(values[-1]['7d80'], '100')
+        self.assertEqual(values[-2]['7d80'], '100')
+        self.assertEqual(values[-3]['7d80'], '900')
