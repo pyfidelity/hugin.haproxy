@@ -45,9 +45,9 @@ class DailyStatistics(object):
         data = sorted(sum(data, []))    # concatenate & sort
         values = {}
         length = len(data)
-        values['%dlength' % days] = length
-        values['%davg' % days] = sum(data) / length if length else 0
-        values['%dstddev' % days] = numpy.std(numpy.array(data))
+        values['%ddlength' % days] = length
+        values['%ddavg' % days] = sum(data) / length if length else 0
+        values['%ddstddev' % days] = numpy.std(numpy.array(data))
         for p in range(0, 100, 10):
             values['%dd%d' % (days, p)] = valueForPercentile(data ,p)
         return values

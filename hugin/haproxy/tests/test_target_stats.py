@@ -284,14 +284,14 @@ class TestHistogram(TempdirAvailable):
         self.failUnless("date" in values[0])
         self.failUnless("1d80" in values[0])
         self.failUnless("7d80" in values[0])
-        self.failUnless("1avg" in values[0])
-        self.failUnless("7avg" in values[0])
+        self.failUnless("1davg" in values[0])
+        self.failUnless("7davg" in values[0])
     
     def test_last_rolling_average_only_contains_last_seven_days(self):
         self.analyser()
         values = self.read_csv('all_stats.csv')
-        self.assertEqual(values[-1]['7avg'], '100')
-        self.assertEqual(values[-1]['7stddev'], '0.0')
+        self.assertEqual(values[-1]['7davg'], '100')
+        self.assertEqual(values[-1]['7dstddev'], '0.0')
         
     def test_percentiles_drop_after_performance_improvement(self):
         self.analyser()
