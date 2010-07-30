@@ -1,1 +1,2 @@
-# Hey presto, a module
+from warnings import filterwarnings
+filterwarnings('ignore')
