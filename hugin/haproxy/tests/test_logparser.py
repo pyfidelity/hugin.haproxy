@@ -15,7 +15,7 @@ class TestLogParser(unittest.TestCase):
                     'terminationevent', 'sessionstate', 'pc', 'opc',
                     'actconn', 'feconn', 'beconn', 'srv_conn', 'retries', 
                     'srv_queue', 'listener_queue',
-                    'method', 'url', 'template'
+                    'method', 'url', 'template', 'querystring'
                     ]
         self.failUnlessEqual(self.parser.list_variables(), expected)
 
@@ -70,10 +70,54 @@ class TestLogParser(unittest.TestCase):
                   'method': 'GET', 
                   'url': '/bullet.gif', 
                   'template': 'bullet.gif', 
+                  'querystring': None,
                   }
 
         res = self.parser(logline)
         self.failUnlessEqual(res, expect, ', '.join(['%s: %s != %s' % (k,v,expect[k]) for k,v in res.items() if expect[k] != v]))
+
+    def test_basiclogline(self):
+        logline = 'Nov  2 14:04:10 localhost.localdomain haproxy[2123]: ' + \
+                  '127.0.0.1:41618 [02/Nov/2009:14:04:10.382] frnt bck-1/inst ' + \
+                  '3183/23/-1/12/11215 200 937 BCef - SCVD 1/2/3/4/0 1/30 ' + \
+                  '"GET /VirtualHostBase/http/www.website.org:80/plone/VirtualHostRoot/search?query=foo HTTP/1.1"'
+
+        expect = {'syslog':None,
+                  'pid':'haproxy[2123]',
+                  'ip': '127.0.0.1:41618', 
+                  'date': '02/Nov/2009:14:04:10.382', 
+                  'frontend': 'frnt',
+                  'backend': 'bck-1', 
+                  'instance': 'inst', 
+                  'Tq': 3183, 
+                  'Tw': 23, 
+                  'Tc': -1, 
+                  'Tr': 12, 
+                  'Tt': 11215, 
+                  'status': '200', 
+                  'bytes': '937', 
+                  'reqcookie': 'BCef', 
+                  'respcookie': '-', 
+                  'terminationevent': 'S', 
+                  'sessionstate': 'C',
+                  'pc': 'V', 
+                  'opc': 'D', 
+                  'actconn': '1', 
+                  'feconn': '2', 
+                  'beconn': '3', 
+                  'srv_conn': '4', 
+                  'retries': '0', 
+                  'srv_queue': '1', 
+                  'listener_queue': '30', 
+                  'method': 'GET', 
+                  'url': '/search', 
+                  'template': 'search', 
+                  'querystring': "?query=foo",
+                  }
+
+        res = self.parser(logline)
+        self.failUnlessEqual(res, expect, ', '.join(['%s: %s != %s' % (k,v,expect[k]) for k,v in res.items() if expect[k] != v]))
+
 
     def test_syslogline1(self):
         logline = '<182>Nov  3 14:12:50 haproxy[30111]: ' + \
@@ -110,6 +154,7 @@ class TestLogParser(unittest.TestCase):
                   'method': 'GET', 
                   'url': '/', 
                   'template': None, 
+                  'querystring': None,
                   }
 
         res = self.parser(logline)
@@ -151,6 +196,7 @@ class TestLogParser(unittest.TestCase):
                   'method': 'GET', 
                   'url': '/bullet.gif', 
                   'template': 'bullet.gif', 
+                  'querystring': None,
                   }
 
         res = self.parser(logline)
@@ -193,6 +239,7 @@ class TestLogParser(unittest.TestCase):
                   'method': 'GET', 
                   'url': '/frontpage_view', 
                   'template': 'frontpage_view', 
+                  'querystring': None,
                   }
 
         res = self.parser(logline)
@@ -234,6 +281,7 @@ class TestLogParser(unittest.TestCase):
                   'method': 'GET', 
                   'url': '/web/MMBase/http/www.site.no:80/249934', 
                   'template': '249934', 
+                  'querystring': None,
                   }
 
         res = self.parser(logline)
