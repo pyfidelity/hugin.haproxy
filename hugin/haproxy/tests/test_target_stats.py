@@ -62,6 +62,12 @@ Jul 17 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [17/Jul/2010:17:25:59.4
 Jul 18 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [18/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/100 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
 Jul 19 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [19/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/0/100 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" """
 
+LOG_WITH_SLOW_REQUEST = """Jun 27 23:58:11 127.0.0.1 haproxy[17977]: 10.121.10.117:58444 [27/Jun/2010:23:58:11.077] zopecluster logger/logger01 0/0/0/1/2 200 297 - - ---- 1/1/0/0/0 0/0 "GET /VirtualHostBase/http/www.elkjop.int:80/eli/VirtualHostRoot/ HTTP/1.0" 
+Jun 28 00:02:13 127.0.0.1 haproxy[17977]: 10.121.10.117:56014 [28/Jun/2010:00:02:13.953] zopecluster zope/<NOSRV> 0/-1/-1/-1/0 503 212 - - SC-- 1/1/1/0/0 0/0 "GET /VirtualHostBase/http/www.elkjop.int:80/eli/VirtualHostRoot/ HTTP/1.1" 
+Jun 28 00:02:15 127.0.0.1 haproxy[17977]: 10.121.10.117:56017 [28/Jun/2010:00:02:15.663] zopecluster zope/<NOSRV> 0/-1/-1/-1/0 503 212 - - SC-- 1/1/1/0/0 0/0 "GET /VirtualHostBase/http/lb01-varn.elkjop.int:80/eli/VirtualHostRoot/ HTTP/1.1" 
+Jun 28 00:03:10 127.0.0.1 haproxy[17977]: 10.121.10.116:39773 [27/Jun/2010:23:58:10.817] zopecluster zope/plone0204 0/0/0/-1/300010 504 194 - - sH-- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.elkjop.int:80/eli/VirtualHostRoot/ HTTP/1.0" 
+Jun 28 00:03:54 127.0.0.1 haproxy[17977]: 10.121.10.116:53313 [28/Jun/2010:00:03:54.143] zopecluster zope/plone0301 0/0/0/746/748 302 3557 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.elkjop.int:80/eli/VirtualHostRoot/ HTTP/1.1" """
+
 
 class TempdirAvailable(unittest.TestCase):
     
@@ -142,6 +148,16 @@ class TestSimpleConfiguration(TempdirAvailable):
         output = open(location, 'r').readlines()
         self.assertEqual([ line.split(',')[0] for line in output ],
             ['date', '2010-07-21', '2010-07-22', '2010-07-23'])
+
+    def test_slow_requests_crossing_date_boundaries(self):
+        analyser = GoalAnalyser(BytesIO(LOG_WITH_SLOW_REQUEST),
+            location=self.location,
+            urls={ 'home':('GET', re.compile("^/?$")), })
+        analyser()
+        location = os.path.join(self.location, 'home_stats.csv')
+        output = open(location, 'r').readlines()
+        self.assertEqual([ line.split(',')[0] for line in output ],
+            ['date', '2010-06-27', '2010-06-28'])
 
 
 class TestSimpleConfiguration2(TempdirAvailable):

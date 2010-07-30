@@ -15,6 +15,7 @@ def getDateForLine(line):
     """Return a python datetime accurate to the date level for the day
     this line took place on."""
     date = datetime.datetime.strptime(line['date'], DATE_FORMAT)
+    date += datetime.timedelta(milliseconds=line['Tt'])
     return date.date()
 
 

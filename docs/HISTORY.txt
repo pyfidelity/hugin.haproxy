@@ -4,6 +4,10 @@ Changelog
 0.1dev (unreleased)
 -------------------
 
+* Use request's end time when splitting up days during parsing so that slow
+  requests don't create multiple entries in the CSV data.
+  [witsch]
+
 * Add workaround for the missing ability to merge log data of the same day
   parsed during different `analyse` runs.
   [witsch]
