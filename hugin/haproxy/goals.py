@@ -113,12 +113,12 @@ class GoalAnalyser(object):
         """Take a parsed log line and return the rule name that it matches
         or None if none match."""
         for name in self.statscounters.keys():
-            method, url = self.urls[name]
+            method, url_pattern = self.urls[name]
             url = line['url']
             qs = line['querystring']
             if qs is not None:
                 url += qs
-            if url.match(url) and method == line['method']:
+            if url_pattern.match(url) and method == line['method']:
                 return name
 
     def __call__(self):
