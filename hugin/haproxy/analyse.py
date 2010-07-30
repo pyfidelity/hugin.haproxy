@@ -10,6 +10,7 @@ from os.path import join
 def main():
     parser = ArgumentParser(description='Analyse haproxy logs.')
     parser.add_argument('-q', '--quiet', help='suppress warnings', action='store_true')
+    parser.add_argument('-p', '--past-only', help='do not output statistics for today', action='store_true')
     parser.add_argument('-d', '--directory', help='output directory', default='.')
     parser.add_argument('config', help='name of the configuration file')
     parser.add_argument('log', nargs='*', help='haproxy log files')
@@ -23,7 +24,7 @@ def main():
     urls = config.urls()
 
     analyser = GoalAnalyser(input(args.log, openhook=hook_compressed),
-        location=args.directory, urls=urls)
+        location=args.directory, urls=urls, past_only=args.past_only)
     analyser()
 
     csvname = join(args.directory, 'index.csv')

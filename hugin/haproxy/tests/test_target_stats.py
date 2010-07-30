@@ -5,6 +5,7 @@ import tempfile
 from io import BytesIO
 import os
 import shutil
+import datetime
 
 from paste.util.multidict import MultiDict
 
@@ -130,6 +131,17 @@ class TestSimpleConfiguration(TempdirAvailable):
         prep = open(location, 'r')
         csv = DictReader(prep)
         self.failUnless(len(list(csv)), 1)
+
+    def test_todays_data_can_be_skipped(self):
+        today = datetime.date.today().strftime('%d/%b/%Y')
+        log = BytesIO(LONGER_LOG.replace('24/Jul/2010', today))
+        analyser = GoalAnalyser(log, location=self.location,
+            urls={ 'home':('GET', re.compile("^/?$")), }, past_only=True)
+        analyser()
+        location = os.path.join(self.location, 'home_stats.csv')
+        output = open(location, 'r').readlines()
+        self.assertEqual([ line.split(',')[0] for line in output ],
+            ['date', '2010-07-21', '2010-07-22', '2010-07-23'])
 
 
 class TestSimpleConfiguration2(TempdirAvailable):

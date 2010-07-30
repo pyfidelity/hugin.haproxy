@@ -63,12 +63,13 @@ class GoalAnalyser(object):
     """Takes a log file and some filters for URL specific stats and generates
     CSV files with the result of the DailyStatistics filter"""
 
-    def __init__(self, log, location, urls={}, avgs=[1, 7]):
+    def __init__(self, log, location, urls={}, avgs=[1, 7], past_only=False):
         super(GoalAnalyser, self).__init__()
         self.log = log
         self.urls = urls
         self.avgs = avgs
         self.dir = location
+        self.past_only = past_only
         self._statscounters = MultiDict()
         self._outputs = {}
         self._files = {}
@@ -125,6 +126,8 @@ class GoalAnalyser(object):
         days = itertools.groupby(iterable, getDateForLine)
         existing = self._existing_dates
         for day, iterable in days:
+            if self.past_only and day == datetime.date.today():
+                continue
             # Duplicate the iterator for each day, find the responsible rule
             # name and turn it into a dictionary.iteritems() style iterator.
             parsed, destination = itertools.tee(iterable)

@@ -4,6 +4,10 @@ Changelog
 0.1dev (unreleased)
 -------------------
 
+* Add workaround for the missing ability to merge log data of the same day
+  parsed during different `analyse` runs.
+  [witsch]
+
 * Use numpy for the timing stats and add some more values.
   [MatthewWilkes]
 
