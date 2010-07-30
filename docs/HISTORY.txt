@@ -8,6 +8,9 @@ Changelog
   parsed during different `analyse` runs.
   [witsch]
 
+* Add wrapper and entry-point to run the log analyser from the command line.
+  [witsch]
+
 * Use numpy for the timing stats and add some more values.
   [MatthewWilkes]
 
