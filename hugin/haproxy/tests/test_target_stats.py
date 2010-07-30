@@ -145,26 +145,6 @@ class TestSimpleConfiguration2(TempdirAvailable):
         self.assertEqual(len(self.analyser.statscounters), 1)
         self.assertEqual(self.analyser.statscounters.keys(), ["en"])
 
-    def DISABLED_test_sample_filtered_to_en(self):
-        self.analyser()
-
-        parsed = self.analyser.parse(SAMPLE_LOG2)
-        self.assertEqual(self.analyser.filterForLine(parsed), 'en')
-
-    def DISABLED_test_running_dumps_into_output(self):
-        self.analyser()
-        location = os.path.join(self.location, 'en_stats.csv')
-        output = open(location, 'r').readlines()
-        self.assertEqual(len(output), 2) # Header row and one day
-
-    def DISABLED_test_csv_is_in_a_valid_format(self):
-        self.analyser()
-
-        location = os.path.join(self.location, 'en_stats.csv')
-        prep = open(location, 'r')
-        csv = DictReader(prep)
-        self.failUnless(len(list(csv)), 1)
-
 
 class TestInvalidLogEntry(TempdirAvailable):
 
