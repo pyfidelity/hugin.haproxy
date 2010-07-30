@@ -114,7 +114,11 @@ class GoalAnalyser(object):
         or None if none match."""
         for name in self.statscounters.keys():
             method, url = self.urls[name]
-            if url.match(line['url']) and method == line['method']:
+            url = line['url']
+            qs = line['querystring']
+            if qs is not None:
+                url += qs
+            if url.match(url) and method == line['method']:
                 return name
 
     def __call__(self):
