@@ -70,15 +70,15 @@ class GoalAnalyser(object):
         self.avgs = avgs
         self.dir = location
         self.past_only = past_only
-        self._statscounters = MultiDict()
-        self._outputs = {}
+        self.statscounters = MultiDict()
+        self.outputs = {}
         self._files = {}
         self._existing_dates = {}
         self.parse = logparser()
 
     def _instantiateFilters(self):
         for name in self.urls:
-            self._statscounters[name] = DailyStatistics(self.avgs)
+            self.statscounters[name] = DailyStatistics(self.avgs)
 
     def _instantiateCSVWriters(self):
         keys = ['date', ] + sorted(DailyStatistics(self.avgs).stats().keys())
@@ -95,19 +95,7 @@ class GoalAnalyser(object):
             writer = DictWriter(backing, keys)
             if self._existing_dates.get(name, None) is None:
                 writer.writerow(dict(zip(keys, keys)))
-            self._outputs[name] = writer
-
-    @property
-    def filters(self):
-        return self.urls.keys()
-
-    @property
-    def statscounters(self):
-        return self._statscounters
-
-    @property
-    def outputs(self):
-        return self._outputs
+            self.outputs[name] = writer
 
     def filterForLine(self, line):
         """Take a parsed log line and return the rule name that it matches
@@ -147,7 +135,7 @@ class GoalAnalyser(object):
                     warnings.warn("%s for %s is not classified" %
                         (entry['method'], entry['url']))
                     continue
-            for name in self.filters:
+            for name in self.urls:
                 stats = self.statscounters[name].stats()
                 if not any(stats.values()):
                     # We have no data at all, skip this
