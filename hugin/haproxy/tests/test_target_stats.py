@@ -12,6 +12,8 @@ from hugin.haproxy.goals import GoalAnalyser
 
 SAMPLE_LOG = """Jul 21 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" """
 
+SAMPLE_LOG2 = """Jul 30 10:35:19 localhost.localdomain haproxy[11287]: 127.0.0.1:52229 [30/Jul/2010:10:35:19.420] zopecluster back_anon/varnish 0/0/0/89/89 200 4378 - - ---- 1/1/1/1/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/en/ HTTP/1.1"""
+
 BOGUS_LOG = """Jul 21 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/wibble/wobble/woo HTTP/1.0" """
 
 INVALID_LOG = """Jul 21 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
@@ -129,10 +131,43 @@ class TestSimpleConfiguration(TempdirAvailable):
         csv = DictReader(prep)
         self.failUnless(len(list(csv)), 1)
 
-    
+
+class TestSimpleConfiguration2(TempdirAvailable):
+
+    def setUp(self):
+        TempdirAvailable.setUp(self)
+        configs = { 'en':('GET', re.compile("^/?$")), }
+        self.analyser = GoalAnalyser(BytesIO(SAMPLE_LOG2), location=self.location, urls=configs)
+
+    def test_stats_counter_instantiated(self):
+        self.analyser()
+
+        self.assertEqual(len(self.analyser.statscounters), 1)
+        self.assertEqual(self.analyser.statscounters.keys(), ["en"])
+
+    def DISABLED_test_sample_filtered_to_en(self):
+        self.analyser()
+
+        parsed = self.analyser.parse(SAMPLE_LOG2)
+        self.assertEqual(self.analyser.filterForLine(parsed), 'en')
+
+    def DISABLED_test_running_dumps_into_output(self):
+        self.analyser()
+        location = os.path.join(self.location, 'en_stats.csv')
+        output = open(location, 'r').readlines()
+        self.assertEqual(len(output), 2) # Header row and one day
+
+    def DISABLED_test_csv_is_in_a_valid_format(self):
+        self.analyser()
+
+        location = os.path.join(self.location, 'en_stats.csv')
+        prep = open(location, 'r')
+        csv = DictReader(prep)
+        self.failUnless(len(list(csv)), 1)
+
 
 class TestInvalidLogEntry(TempdirAvailable):
-    
+
     def setUp(self):
         TempdirAvailable.setUp(self)
 
