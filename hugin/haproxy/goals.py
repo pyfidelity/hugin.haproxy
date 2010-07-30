@@ -49,7 +49,7 @@ class DailyStatistics(object):
         values['%ddavg' % days] = sum(data) / length if length else 0
         values['%ddstddev' % days] = numpy.std(numpy.array(data))
         for p in range(10, 101, 10):
-            values['%dd%d' % (days, p)] = valueForPercentile(data ,p)
+            values['%dd%d' % (days, p)] = valueForPercentile(data, p)
         return values
 
     def stats(self):
@@ -63,7 +63,7 @@ class GoalAnalyser(object):
     """Takes a log file and some filters for URL specific stats and generates
     CSV files with the result of the DailyStatistics filter"""
 
-    def __init__(self, log, location, urls={}, avgs=[1,7]):
+    def __init__(self, log, location, urls={}, avgs=[1, 7]):
         super(GoalAnalyser, self).__init__()
         self.log = log
         self.urls = urls
@@ -112,8 +112,8 @@ class GoalAnalyser(object):
         """Take a parsed log line and return the rule name that it matches
         or None if none match."""
         for name in self.statscounters.keys():
-            condition = self.urls[name]
-            if condition[1].match(line['url']) and condition[0] == line['method']:
+            method, url = self.urls[name]
+            if url.match(line['url']) and method == line['method']:
                 return name
 
     def __call__(self):
@@ -123,6 +123,7 @@ class GoalAnalyser(object):
         iterable = itertools.imap(self.parse, self.log)
         iterable = itertools.ifilter(lambda x: x is not None, iterable)
         days = itertools.groupby(iterable, getDateForLine)
+        existing = self._existing_dates
         for day, iterable in days:
             # Duplicate the iterator for each day, find the responsible rule
             # name and turn it into a dictionary.iteritems() style iterator.
@@ -132,17 +133,19 @@ class GoalAnalyser(object):
             for destination, entry in classified:
                 try:
                     # Pass the line onto the underlying stats class
-                    if day.isoformat() in self._existing_dates.get(destination, []):
+                    if day.isoformat() in existing.get(destination, []):
                         continue
                     self.statscounters[destination].process(entry)
                 except KeyError:
-                    warnings.warn("%s for %s is not classified" % (entry['method'], entry['url']))
+                    warnings.warn("%s for %s is not classified" %
+                        (entry['method'], entry['url']))
                     continue
             for name in self.filters:
                 stats = self.statscounters[name].stats()
                 if not any(stats.values()):
                     # We have no data at all, skip this
-                    warnings.warn("No data for %s on %s" % (name, day.isoformat()))
+                    warnings.warn("No data for %s on %s" %
+                        (name, day.isoformat()))
                     continue
                 stats['date'] = day.isoformat()
                 self.outputs[name].writerow(stats)
