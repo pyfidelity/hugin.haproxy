@@ -72,8 +72,8 @@ class GoalAnalyser(object):
         self.past_only = past_only
         self.statscounters = MultiDict()
         self.outputs = {}
-        self._files = {}
-        self._existing_dates = {}
+        self.files = {}
+        self.existing_dates = {}
         self.parse = logparser()
 
     def _instantiateFilters(self):
@@ -88,12 +88,12 @@ class GoalAnalyser(object):
                 # We are going to add to an existing file.
                 backing = open(location, 'r+')
                 reader = DictReader(backing)
-                self._existing_dates[name] = [r['date'] for r in reader]
+                self.existing_dates[name] = [r['date'] for r in reader]
             else:
                 backing = open(location, 'w')
-            self._files[name] = backing
+            self.files[name] = backing
             writer = DictWriter(backing, keys)
-            if self._existing_dates.get(name, None) is None:
+            if self.existing_dates.get(name, None) is None:
                 writer.writerow(dict(zip(keys, keys)))
             self.outputs[name] = writer
 
@@ -116,7 +116,7 @@ class GoalAnalyser(object):
         iterable = itertools.imap(self.parse, self.log)
         iterable = itertools.ifilter(lambda x: x is not None, iterable)
         days = itertools.groupby(iterable, getDateForLine)
-        existing = self._existing_dates
+        existing = self.existing_dates
         for day, iterable in days:
             if self.past_only and day == datetime.date.today():
                 continue
@@ -147,7 +147,7 @@ class GoalAnalyser(object):
         self.finish()
 
     def finish(self):
-        for f in self._files.values():
+        for f in self.files.values():
             f.flush()
             os.fsync(f.fileno())
             f.close()
