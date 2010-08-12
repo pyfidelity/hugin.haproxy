@@ -4,6 +4,10 @@ Changelog
 0.1dev (unreleased)
 -------------------
 
+* Added ``log`` option to parser config file. When it's ``true``, the matched
+  urls will be logged in a file in the stats directory.
+  [fschulze]
+
 * Use request's end time when splitting up days during parsing so that slow
   requests don't create multiple entries in the CSV data.
   [witsch]

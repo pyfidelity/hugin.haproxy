@@ -11,6 +11,8 @@ from paste.util.multidict import MultiDict
 from hugin.haproxy.logparser import logparser, DATE_FORMAT
 
 
+LOG_FORMAT = '{ip} - - [{date} +0000] "{method} {url}{querystring} HTTP/1.0" {status} {bytes} {frontend} {backend}\n'
+
 def getDateForLine(line):
     """Return a python datetime accurate to the date level for the day
     this line took place on."""
@@ -64,10 +66,18 @@ class GoalAnalyser(object):
     """Takes a log file and some filters for URL specific stats and generates
     CSV files with the result of the DailyStatistics filter"""
 
-    def __init__(self, log, location, urls={}, avgs=[1, 7], past_only=False):
+    def __init__(self, log, location, urls=None, avgs=[1, 7], past_only=False,
+                 config=None):
         super(GoalAnalyser, self).__init__()
+        self.config = config
         self.log = log
-        self.urls = urls
+        if urls is None:
+            if self.config is None:
+                self.urls = {}
+            else:
+                self.urls = config.urls()
+        else:
+            self.urls = urls
         self.avgs = avgs
         self.dir = location
         self.past_only = past_only
@@ -76,6 +86,14 @@ class GoalAnalyser(object):
         self.files = {}
         self.existing_dates = {}
         self.parse = logparser()
+        self.log_entries = {}
+        if self.config is not None:
+            for section in self.config.sections():
+                log = dict(self.config.items(section)).get('log', '').lower()
+                if log in ('true', 'yes', 'on'):
+                    fn = '%s.log' % section
+                    self.log_entries[section] = fn
+                    self.files[fn] = open(os.path.join(self.dir, fn), 'w')
 
     def _instantiateFilters(self):
         for name in self.urls:
@@ -132,6 +150,9 @@ class GoalAnalyser(object):
                     if day.isoformat() in existing.get(destination, []):
                         continue
                     self.statscounters[destination].process(entry)
+                    fn = self.log_entries.get(destination)
+                    if fn is not None:
+                        self.files[fn].write(LOG_FORMAT.format(**entry))
                 except KeyError:
                     warnings.warn("%s for %s is not classified" %
                         (entry['method'], entry['url']))

@@ -21,10 +21,9 @@ def main():
 
     config = FilterConfig()
     config.read(args.config)
-    urls = config.urls()
 
     analyser = GoalAnalyser(input(args.log, openhook=hook_compressed),
-        location=args.directory, urls=urls, past_only=args.past_only)
+        location=args.directory, config=config, past_only=args.past_only)
     analyser()
 
     csvname = join(args.directory, 'index.csv')
