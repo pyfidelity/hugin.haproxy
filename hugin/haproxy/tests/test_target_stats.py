@@ -15,6 +15,8 @@ SAMPLE_LOG = """Jul 21 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul
 
 SAMPLE_LOG2 = """Jul 30 10:35:19 localhost.localdomain haproxy[11287]: 127.0.0.1:52229 [30/Jul/2010:10:35:19.420] zopecluster back_anon/varnish 0/0/0/89/89 200 4378 - - ---- 1/1/1/1/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/en/ HTTP/1.1"""
 
+SAMPLE_LOG_ERROR = """Jul 21 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 500 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" """
+
 BOGUS_LOG = """Jul 21 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/wibble/wobble/woo HTTP/1.0" """
 
 INVALID_LOG = """Jul 21 17:25:59 127.0.0.1 haproxy[2474]: 127.0.0.1:49275 [21/Jul/2010:17:25:59.434] zopecluster zope/backend 0/0/0/395/396 200 3535 - - ---- 0/0/0/0/0 0/0 "GET /VirtualHostBase/http/www.site.example:80/subsite/VirtualHostRoot/ HTTP/1.0" 
@@ -97,6 +99,12 @@ class TestSimpleConfiguration(TempdirAvailable):
         
         parsed = self.analyser.parse(SAMPLE_LOG)
         self.assertEqual(self.analyser.filterForLine(parsed), 'home')
+
+    def test_error_code_no_hit(self):
+        self.analyser()
+        
+        parsed = self.analyser.parse(SAMPLE_LOG_ERROR)
+        self.assertEqual(self.analyser.filterForLine(parsed), None)
     
     def test_running_dumps_into_output(self):
         self.analyser()

@@ -1,3 +1,4 @@
+import re
 from csv import DictWriter, DictReader
 from collections import deque, defaultdict
 import numpy
@@ -119,6 +120,9 @@ class GoalAnalyser(object):
     def filterForLine(self, line):
         """Take a parsed log line and return the rule name that it matches
         or None if none match."""
+        status = line.get('status', '200')
+        if re.match('[45]\d\d',status):
+            return
         for name in self.statscounters.keys():
             method, url_pattern = self.urls[name]
             url = line['url']
