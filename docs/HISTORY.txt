@@ -4,6 +4,10 @@ Changelog
 0.1dev (unreleased)
 -------------------
 
+* Fixed a bug where existing dates in CSV was ignored - which made it 
+  difficult to get 7 day statistics.
+  [tesdal]
+
 * Added ``log`` option to parser config file. When it's ``true``, the matched
   urls will be logged in a file in the stats directory.
   [fschulze]

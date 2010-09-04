@@ -140,8 +140,12 @@ class GoalAnalyser(object):
         iterable = itertools.ifilter(lambda x: x is not None, iterable)
         days = itertools.groupby(iterable, getDateForLine)
         existing = self.existing_dates
+        # if avgs goes back several days we have to gather statistics 
+        # for days in existing
+        today = datetime.date.today()
+        statsdays = set([str(today-datetime.timedelta(days=x)) for x in range(int(self.past_only),max(self.avgs)+int(self.past_only))])
         for day, iterable in days:
-            if self.past_only and day == datetime.date.today():
+            if self.past_only and day == today:
                 continue
             # Duplicate the iterator for each day, find the responsible rule
             # name and turn it into a dictionary.iteritems() style iterator.
@@ -151,7 +155,7 @@ class GoalAnalyser(object):
             for destination, entry in classified:
                 try:
                     # Pass the line onto the underlying stats class
-                    if day.isoformat() in existing.get(destination, []):
+                    if  day.isoformat() not in statsdays and day.isoformat() in existing.get(destination, []):
                         continue
                     self.statscounters[destination].process(entry)
                     fn = self.log_entries.get(destination)
@@ -162,6 +166,9 @@ class GoalAnalyser(object):
                         (entry['method'], entry['url']))
                     continue
             for name in self.urls:
+                # Don't duplicate dates in csv file
+                if day.isoformat() in existing.get(destination, []):
+                    continue
                 stats = self.statscounters[name].stats()
                 if not any(stats.values()):
                     # We have no data at all, skip this
