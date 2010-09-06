@@ -167,7 +167,7 @@ class GoalAnalyser(object):
                     continue
             for name in self.urls:
                 # Don't duplicate dates in csv file
-                if day.isoformat() in existing.get(destination, []):
+                if day.isoformat() in set(sum(existing.values(), [])):
                     continue
                 stats = self.statscounters[name].stats()
                 if not any(stats.values()):
