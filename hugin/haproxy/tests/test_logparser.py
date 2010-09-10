@@ -14,7 +14,7 @@ class TestLogParser(unittest.TestCase):
                     'reqcookie', 'respcookie', 
                     'terminationevent', 'sessionstate', 'pc', 'opc',
                     'actconn', 'feconn', 'beconn', 'srv_conn', 'retries', 
-                    'srv_queue', 'listener_queue',
+                    'srv_queue', 'listener_queue', 'captures',
                     'method', 'url', 'template', 'querystring'
                     ]
         self.failUnlessEqual(self.parser.list_variables(), expected)
@@ -34,7 +34,7 @@ class TestLogParser(unittest.TestCase):
         self.failIf(self.parser(logline))
 
 
-    def test_basiclogline(self):
+    def test_basiclogline1(self):
         logline = 'Nov  2 14:04:10 localhost.localdomain haproxy[2123]: ' + \
                   '127.0.0.1:41618 [02/Nov/2009:14:04:10.382] frnt bck-1/inst ' + \
                   '3183/23/-1/12/11215 200 937 BCef - SCVD 1/2/3/4/0 1/30 ' + \
@@ -67,6 +67,7 @@ class TestLogParser(unittest.TestCase):
                   'retries': '0', 
                   'srv_queue': '1', 
                   'listener_queue': '30', 
+                  'captures': None,
                   'method': 'GET', 
                   'url': '/bullet.gif', 
                   'template': 'bullet.gif', 
@@ -76,7 +77,7 @@ class TestLogParser(unittest.TestCase):
         res = self.parser(logline)
         self.failUnlessEqual(res, expect, ', '.join(['%s: %s != %s' % (k,v,expect[k]) for k,v in res.items() if expect[k] != v]))
 
-    def test_basiclogline(self):
+    def test_basiclogline2(self):
         logline = 'Nov  2 14:04:10 localhost.localdomain haproxy[2123]: ' + \
                   '127.0.0.1:41618 [02/Nov/2009:14:04:10.382] frnt bck-1/inst ' + \
                   '3183/23/-1/12/11215 200 937 BCef - SCVD 1/2/3/4/0 1/30 ' + \
@@ -109,6 +110,7 @@ class TestLogParser(unittest.TestCase):
                   'retries': '0', 
                   'srv_queue': '1', 
                   'listener_queue': '30', 
+                  'captures': None,
                   'method': 'GET', 
                   'url': '/search', 
                   'template': 'search', 
@@ -151,6 +153,7 @@ class TestLogParser(unittest.TestCase):
                   'retries': '0', 
                   'srv_queue': '0', 
                   'listener_queue': '0', 
+                  'captures': None,
                   'method': 'GET', 
                   'url': '/', 
                   'template': None, 
@@ -193,6 +196,7 @@ class TestLogParser(unittest.TestCase):
                   'retries': '0', 
                   'srv_queue': '1', 
                   'listener_queue': '30', 
+                  'captures': None,
                   'method': 'GET', 
                   'url': '/bullet.gif', 
                   'template': 'bullet.gif', 
@@ -236,6 +240,7 @@ class TestLogParser(unittest.TestCase):
                   'retries': '0', 
                   'srv_queue': '0', 
                   'listener_queue': '0', 
+                  'captures': None,
                   'method': 'GET', 
                   'url': '/frontpage_view', 
                   'template': 'frontpage_view', 
@@ -278,9 +283,53 @@ class TestLogParser(unittest.TestCase):
                   'retries': None, 
                   'srv_queue': '0', 
                   'listener_queue': '0', 
+                  'captures': None,
                   'method': 'GET', 
                   'url': '/web/MMBase/http/www.site.no:80/249934', 
                   'template': '249934', 
+                  'querystring': None,
+                  }
+
+        res = self.parser(logline)
+        self.failUnlessEqual(res, expect, ', '.join(['%s: %s != %s' % (k,v,expect[k]) for k,v in res.items() if expect[k] != v]))
+
+    def test_syslogline_with_captured_header(self):
+        logline = 'Jan  1 07:05:18 localhost haproxy[4145]: '+\
+                  '127.0.0.1:41760 [01/Jan/2010:07:05:17.469] public public/public06 '+\
+                  '0/0/0/1379/1380 200 482 - - ---- 0/0/0/0 0/0 {foo} '+\
+                  '"GET /web/MMBase/http/www.site.no:80/249934 HTTP/1.1" '
+
+        expect = {'syslog':None,
+                  'pid':'haproxy[4145]',
+                  'ip': '127.0.0.1:41760',
+                  'date': '01/Jan/2010:07:05:17.469',
+                  'frontend': 'public',
+                  'backend': 'public',
+                  'instance': 'public06',
+                  'Tq': 0,
+                  'Tw': 0,
+                  'Tc': 0,
+                  'Tr': 1379,
+                  'Tt': 1380,
+                  'status': '200',
+                  'bytes': '482',
+                  'reqcookie': '-',
+                  'respcookie': '-',
+                  'terminationevent': '-',
+                  'sessionstate': '-',
+                  'pc': '-',
+                  'opc': '-',
+                  'actconn': '0',
+                  'feconn': '0',
+                  'beconn': '0',
+                  'srv_conn': '0',
+                  'retries': None,
+                  'srv_queue': '0',
+                  'listener_queue': '0',
+                  'captures': 'foo',
+                  'method': 'GET',
+                  'url': '/web/MMBase/http/www.site.no:80/249934',
+                  'template': '249934',
                   'querystring': None,
                   }
 

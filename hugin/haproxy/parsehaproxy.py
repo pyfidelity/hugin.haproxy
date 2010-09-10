@@ -24,9 +24,10 @@ class logparser(object):
         pattterm = '(?P<terminationevent>\S)(?P<sessionstate>\S)(?P<pc>\S)(?P<opc>\S) '
         pattconn = '(?P<actconn>\d+)/(?P<feconn>\d+)/(?P<beconn>\d+)/(?P<srv_conn>\d+)/(?P<retries>[-\+\d]+) '
         pattqueue = '(?P<srv_queue>\d+)/(?P<listener_queue>\d+) '
+        pattcaptures = '({(?P<captures>[^}]*)\} )?'
         patturl = '"(?P<method>\S+) (?:.*VirtualHostRoot)?(?P<url>\S*/(?P<template>[^/][^\?]+)?)?(?:\?\S*)? \S+'
 
-        self.pattern = pattsyslogd + pattinfo + patttiming + patthttp + pattterm + pattconn + pattqueue + patturl + '.*'
+        self.pattern = pattsyslogd + pattinfo + patttiming + patthttp + pattterm + pattconn + pattqueue + pattcaptures + patturl + '.*'
         self.regex = re.compile(self.pattern)
 
         self.blacklist = set(('/haproxy-status',))
