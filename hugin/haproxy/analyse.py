@@ -32,8 +32,12 @@ def main():
 
 def generateStatsIndex(output, config):
     csv = writer(output)
-    csv.writerow(('section', 'title', 'limit'))
+    csv.writerow(('section', 'title', 'limit', 'description'))
     for section in config.sections():
         items = dict(config.items(section))
-        csv.writerow((section, items.get('title', section),
-            int(items.get('max', 3000))))
+        csv.writerow((
+            section,
+            items.get('title', section),
+            int(items.get('max', 3000)),
+            items.get('description', section),
+            ))
