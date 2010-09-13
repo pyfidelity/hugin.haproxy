@@ -39,5 +39,5 @@ def generateStatsIndex(output, config):
             section,
             items.get('title', section),
             int(items.get('max', 3000)),
-            items.get('description', section),
+            items.get('description', ''),
             ))
