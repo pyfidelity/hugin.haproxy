@@ -119,16 +119,19 @@ class GoalAnalyser(object):
     def filterForLine(self, line):
         """Take a parsed log line and return the rule name that it matches
         or None if none match."""
-        status = line.get('status', '200')
-        if re.match('[45]\d\d',status):
+        status = int(line.get('status', '200'))
+        if status >= 400 and status < 600:
             return
+        method = line['method']
+        url = line['url']
+        qs = line['querystring']
+        if qs is not None:
+            url += qs
         for name in self.statscounters.keys():
-            method, url_pattern = self.urls[name]
-            url = line['url']
-            qs = line['querystring']
-            if qs is not None:
-                url += qs
-            if url_pattern.match(url) and method == line['method']:
+            method_name, url_pattern = self.urls[name]
+            if method_name != method:
+                continue
+            if url_pattern.match(url):
                 return name
 
     def __call__(self):
