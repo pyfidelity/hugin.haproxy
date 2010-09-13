@@ -36,8 +36,7 @@ class DailyStatistics(object):
         self.days = deque(maxlen=max(avgs))
         self.last_day = None
 
-    def process(self, data):
-        date = getDateForLine(data)
+    def process(self, data, date):
         if not date.day == self.last_day:
             self.data = []
             self.days.append(self.data)
@@ -157,7 +156,7 @@ class GoalAnalyser(object):
                     # Pass the line onto the underlying stats class
                     if  day.isoformat() not in statsdays and day.isoformat() in existing.get(destination, []):
                         continue
-                    self.statscounters[destination].process(entry)
+                    self.statscounters[destination].process(entry, day)
                     fn = self.log_entries.get(destination)
                     if fn is not None:
                         self.files[fn].write(LOG_FORMAT.format(**entry))
