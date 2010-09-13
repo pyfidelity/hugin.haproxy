@@ -27,7 +27,7 @@ class TestGenerateHTML(TestCase):
         output = BytesIO()
         generateStatsIndex(output, self.config)
         self.assertEqual(output.getvalue().splitlines(), [
-            'section,title,limit',
-            'home,Home page,2000',
-            'about,about,3000',
+            'section,title,limit,description',
+            'home,Home page,2000,',
+            'about,about,3000,',
         ])
