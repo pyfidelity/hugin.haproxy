@@ -133,6 +133,7 @@ class GoalAnalyser(object):
                 continue
             if url_pattern.match(url):
                 return name
+        warnings.warn("%s for %s is not classified" % (method, url))
 
     def __call__(self):
         self._instantiateFilters()
@@ -155,18 +156,15 @@ class GoalAnalyser(object):
             destination = itertools.imap(self.filterForLine, destination)
             classified = itertools.izip(destination, parsed)
             for destination, entry in classified:
-                try:
-                    # Pass the line onto the underlying stats class
-                    if  day.isoformat() not in statsdays and day.isoformat() in existing.get(destination, []):
-                        continue
-                    self.statscounters[destination].process(entry, day)
-                    fn = self.log_entries.get(destination)
-                    if fn is not None:
-                        self.files[fn].write(LOG_FORMAT.format(**entry))
-                except KeyError:
-                    warnings.warn("%s for %s is not classified" %
-                        (entry['method'], entry['url']))
+                # Pass the line onto the underlying stats class
+                if  day.isoformat() not in statsdays and day.isoformat() in existing.get(destination, []):
                     continue
+                if destination is None:
+                    continue
+                self.statscounters[destination].process(entry, day)
+                fn = self.log_entries.get(destination)
+                if fn is not None:
+                    self.files[fn].write(LOG_FORMAT.format(**entry))
             for name in self.urls:
                 # Don't duplicate dates in csv file
                 if day.isoformat() in set(sum(existing.values(), [])):
