@@ -14,19 +14,25 @@ pattterm = '(?P<terminationevent>\S)(?P<sessionstate>\S)(?P<pc>\S)(?P<opc>\S) '
 pattconn = '(?P<actconn>\d+)/(?P<feconn>\d+)/(?P<beconn>\d+)/(?P<srv_conn>\d+)(/(?P<retries>[-\+\d]+))? '
 pattqueue = '(?P<srv_queue>\d+)/(?P<listener_queue>\d+) '
 pattcaptures = '({(?P<captures>[^}]*)\} )?'
-patturl = '"(?P<method>\S+) (?:/VirtualHostBase/.*/VirtualHostRoot)?' + blacklist + '(?P<url>\S*/(?P<template>[^/][^\?]+)?)?(?P<querystring>\?\S*)? \S+'
+patturl = '"(?P<method>\S+) (?:/VirtualHostBase/.*/VirtualHostRoot)?' + blacklist + '(?P<url>\S*/(?P<template>[^/][^\?]+)?)?(?P<querystring>\?\S*)? \S+"'
 
 DATE_FORMAT = "%d/%b/%Y:%H:%M:%S.%f"
 
 class logparser(object):
     def __init__(self):
-        self.pattern = syslogdprefix + pattsyslogd + pattinfo + patttiming + patthttp + pattterm + pattconn + pattqueue + pattcaptures + patturl + '.*'
+        self.pattern = syslogdprefix + pattsyslogd + pattinfo + patttiming + patthttp + pattterm + pattconn + pattqueue + pattcaptures + patturl
         self.regex = re.compile(self.pattern)
 
     def list_variables(self):
         return re.findall('P<([^>]+)>', self.pattern)
 
     def __call__(self, line):
+        line = line.rstrip()
+        if not line.endswith('"'):
+            # the url always ends with a doublequote, if that's not the case
+            # then the log entry was cut off due to size limits and we try
+            # to make it matchable with the following line
+            line = '%s HTTP/1.1"' % line
         res = self.regex.match(line)
         if res is not None:
             res = res.groupdict()

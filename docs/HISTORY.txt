@@ -4,6 +4,9 @@ Changelog
 0.1dev (unreleased)
 -------------------
 
+* Match cut off log entries if possible.
+  [fschulze]
+
 * Emit warning when a line can't be parsed.
   [fschulze]
 

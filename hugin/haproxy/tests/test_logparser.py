@@ -335,3 +335,46 @@ class TestLogParser(unittest.TestCase):
 
         res = self.parser(logline)
         self.failUnlessEqual(res, expect, ', '.join(['%s: %s != %s' % (k,v,expect[k]) for k,v in res.items() if expect[k] != v]))
+
+    def test_cutoff_line(self):
+        logline = 'Jan  1 07:05:18 localhost haproxy[4145]: '+\
+                  '127.0.0.1:41760 [01/Jan/2010:07:05:17.469] public public/public06 '+\
+                  '0/0/0/1379/1380 200 482 - - ---- 0/0/0/0 0/0 '+\
+                  '"GET /report-a-bug?request=GET+%2Fbrands%2F3684-tribaspace-channel+HTTP%2F1.0%0AAccept%3A+text%2Fhtml%2Capplication%2Fxhtml%2Bxml%2Capplication%2Fxml%3Bq%3D0.9%2C%2A%2F%2A%3Bq%3D0.8%0AAccept-Charset%3A+ISO-8859-1%2Cutf-8%3Bq%3D0.7%2C%2A%3Bq%3D0.7%0AAccept-Encoding%3A+gzip%0AAccept-Language%3A+en-us%2Cen%3Bq%3D0.5%0ACookie%3A+tribaspace%3Dcf05909fbdae4e3f70ae7358cd6370205db975d0637655a0b0dce5fb0b7cbc9c02ff05ec%3B+__utmv%3D%3B+tri_auth%3D%22b68c4c1a619b51e9539af54acc4e79974c89f6b91069%21userid_type%3Aint%22%3B+tri_auth%3D%22b68c4c1a619b51e9539af54acc4e79974c89f6b91069%21userid_type%3Aint%22%0AHost%3A+tribaspace.com%0AReferer%3A+http%3A%2F%2Ftribaspace.com%2Freport-a-bug%3Frequest%3DGET%2B%252Fbrands%252F4369-tribaspace-%252540-lfw%2BHTTP%252F1.0%250AAccept%253A%2Btext%252Fhtml%252Capplication%252Fxhtml%252Bxml%252Capplication%252Fxml%253Bq%253D0.9%252C%252'
+
+        expect = {'syslog':None,
+                  'pid':'haproxy[4145]',
+                  'ip': '127.0.0.1:41760', 
+                  'date': '01/Jan/2010:07:05:17.469',
+                  'frontend': 'public',
+                  'backend': 'public', 
+                  'instance': 'public06', 
+                  'Tq': 0, 
+                  'Tw': 0, 
+                  'Tc': 0, 
+                  'Tr': 1379, 
+                  'Tt': 1380, 
+                  'status': '200', 
+                  'bytes': '482', 
+                  'reqcookie': '-', 
+                  'respcookie': '-', 
+                  'terminationevent': '-', 
+                  'sessionstate': '-',
+                  'pc': '-', 
+                  'opc': '-', 
+                  'actconn': '0', 
+                  'feconn': '0', 
+                  'beconn': '0', 
+                  'srv_conn': '0', 
+                  'retries': None, 
+                  'srv_queue': '0', 
+                  'listener_queue': '0', 
+                  'captures': None,
+                  'method': 'GET', 
+                  'url': '/report-a-bug', 
+                  'template': 'report-a-bug', 
+                  'querystring': '?request=GET+%2Fbrands%2F3684-tribaspace-channel+HTTP%2F1.0%0AAccept%3A+text%2Fhtml%2Capplication%2Fxhtml%2Bxml%2Capplication%2Fxml%3Bq%3D0.9%2C%2A%2F%2A%3Bq%3D0.8%0AAccept-Charset%3A+ISO-8859-1%2Cutf-8%3Bq%3D0.7%2C%2A%3Bq%3D0.7%0AAccept-Encoding%3A+gzip%0AAccept-Language%3A+en-us%2Cen%3Bq%3D0.5%0ACookie%3A+tribaspace%3Dcf05909fbdae4e3f70ae7358cd6370205db975d0637655a0b0dce5fb0b7cbc9c02ff05ec%3B+__utmv%3D%3B+tri_auth%3D%22b68c4c1a619b51e9539af54acc4e79974c89f6b91069%21userid_type%3Aint%22%3B+tri_auth%3D%22b68c4c1a619b51e9539af54acc4e79974c89f6b91069%21userid_type%3Aint%22%0AHost%3A+tribaspace.com%0AReferer%3A+http%3A%2F%2Ftribaspace.com%2Freport-a-bug%3Frequest%3DGET%2B%252Fbrands%252F4369-tribaspace-%252540-lfw%2BHTTP%252F1.0%250AAccept%253A%2Btext%252Fhtml%252Capplication%252Fxhtml%252Bxml%252Capplication%252Fxml%253Bq%253D0.9%252C%252',
+                  }
+
+        res = self.parser(logline)
+        self.failUnlessEqual(res, expect, ', '.join(['%s: %s != %s' % (k,v,expect[k]) for k,v in res.items() if expect[k] != v]))
