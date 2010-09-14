@@ -1,4 +1,4 @@
-import re
+import re, warnings
 
 # XXX BLACKLIST SHOULD BE SET IN CONFIG
 blacklist = ('/haproxy-status',)
@@ -35,6 +35,8 @@ class logparser(object):
                     res[i] = int(res[i])
                 except ValueError:
                     pass
+        else:
+            warnings.warn("Couldn't match %s" % line)
         return res
 
 class partiallogparser(object):
