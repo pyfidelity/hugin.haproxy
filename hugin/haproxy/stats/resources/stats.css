@@ -1,0 +1,24 @@
+.target {
+  float: left;
+  margin: 0 1em 0 0;
+}
+
+.target h3 {
+  margin: 0;
+  padding: 4px 0 0 4px;
+}
+
+.target .chart, .target .histogram {
+  width: 600px;
+  height: 300px;
+  margin: 4px 0 4px 4px;
+  float: left;
+}
+
+.slow {
+  background-color: yellow;
+}
+
+.hidden {
+  display: none;
+}

@@ -5,6 +5,7 @@ from warnings import filterwarnings
 from fileinput import input, hook_compressed
 from csv import writer
 from os.path import join
+from pkg_resources import resource_listdir, resource_isdir, resource_string
 
 
 def main():
@@ -18,6 +19,8 @@ def main():
 
     if args.quiet:
         filterwarnings('ignore')
+
+    generateStatsHTML(args.directory)
 
     config = FilterConfig()
     config.read(args.config)
@@ -41,3 +44,21 @@ def generateStatsIndex(output, config):
             int(items.get('max', 3000)),
             items.get('description', ''),
             ))
+
+
+def generateStatsHTML(directory):
+    pkg = 'hugin.haproxy'
+    base_path = 'stats'
+    paths = ['.']
+    while paths:
+        path = paths.pop()
+        for item in resource_listdir(pkg, join(base_path, path)):
+            if item.startswith('.'):
+                continue
+            item_path = join(path, item)
+            if resource_isdir(pkg, join(base_path, item_path)):
+                paths.append(item_path)
+            else:
+                f = open(join(directory, item_path), 'wb')
+                f.write(resource_string(pkg, join(base_path, item_path)))
+                f.close()

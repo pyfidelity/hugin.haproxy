@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Performance statistics</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="resources/jquery.csv.js"></script>
+    <script type="text/javascript" src="resources/jquery.flot.js"></script>
+    <script type="text/javascript" src="resources/transpose.js"></script>
+    <script type="text/javascript" src="resources/stats.js"></script>
+    <link href="resources/stats.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+
+    <h2>Performance statistics</h2>
+    <p>
+      <input type="checkbox" id="only-slow" />only show slow stats
+      <input type="checkbox" id="show-charts" checked="true" />show charts
+      <input type="checkbox" id="show-histograms" checked="true" />show histograms
+      <br />
+      <span id="choices">
+        1-day:
+        <input type="checkbox" name="1davg" checked="true" />avg
+        <input type="checkbox" name="1d50" />median
+        <input type="checkbox" name="1d80" checked="true" />80%
+        <input type="checkbox" name="1d90" />90%
+        <br />
+        7-day:
+        <input type="checkbox" name="7davg" checked="true" />avg
+        <input type="checkbox" name="7d50" />median
+        <input type="checkbox" name="7d80" checked="true" />80%
+        <input type="checkbox" name="7d90" />90%
+      </span>
+    </p>
+    <div id="stats"></div>
+
+  </body>
+</html>
