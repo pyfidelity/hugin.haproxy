@@ -1,3 +1,4 @@
+import os
 from hugin.haproxy.goals import GoalAnalyser
 from hugin.haproxy.configuration import FilterConfig
 from argparse import ArgumentParser
@@ -57,6 +58,8 @@ def generateStatsHTML(directory):
                 continue
             item_path = join(path, item)
             if resource_isdir(pkg, join(base_path, item_path)):
+                if not os.path.exists(join(directory, item_path)):
+                    os.mkdir(join(directory, item_path))
                 paths.append(item_path)
             else:
                 f = open(join(directory, item_path), 'wb')
