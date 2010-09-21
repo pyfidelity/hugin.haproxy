@@ -141,7 +141,6 @@ function plotall(url) {
         for (var j=0; j < list[0].length; j++) {
             item[list[0][j]] = list[i][j];
         }
-        console.log(item);
         if (item['section']) {
           html = '<div class="target" id="' + item['section'] + '">'
           html = html + '<h3>' + item['title'] + '</h3>'
