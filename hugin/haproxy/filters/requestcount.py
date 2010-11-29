@@ -1,7 +1,10 @@
+import re
 from hugin.haproxy import registerFilter
 from operator import itemgetter
 
 LIMIT = 10 # Use 3 * LIMIT internally
+
+IGNORE = re.compile('(^/_log.*|^/login_form.*|^/eli/@@whoami|^/@@esi/.*|^/acl_users/.*|^/portal_\S+/|(/\S+)/@@r(ight-column|efreshPortlet))')
 
 class FrequentRequests(object):
     def __init__(self):
@@ -10,6 +13,8 @@ class FrequentRequests(object):
 
     def process(self, data):
         url, user = data.get('url', None), data.get('reqcookie', None)
+        if IGNORE.match(url):
+            return # Bail immediately on irrelevant URLs
         count, users = self.urlkey.get(url, (0,set()))
         users.add(user)
         self.urlkey[url] = (count + 1, users)
