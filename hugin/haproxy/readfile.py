@@ -6,6 +6,7 @@ from hugin.haproxy.filters import slowestrequests
 from hugin.haproxy.filters import userstate
 from hugin.haproxy.filters import statusalarm
 from hugin.haproxy.filters import statusstats
+from hugin.haproxy.filters import requestcount
 
 
 from hugin.haproxy import keyedfilters

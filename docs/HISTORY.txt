@@ -4,6 +4,9 @@ Changelog
 0.1dev (unreleased)
 -------------------
 
+* Add request counter to find most popular urls.
+  [tesdal]
+
 * Add html and javascript resources for stats viewing.
   [fschulze]
 
