@@ -4,7 +4,9 @@ from operator import itemgetter
 
 LIMIT = 10 # Use 3 * LIMIT internally
 
-IGNORE = re.compile('(^/_log.*|^/lo(gin_f(orm|ailed)|gged_out|gout).*|^/eli/@@whoami|^/@@(idmintegration|esi/|frontpage_view).*|^/acl_users/.*|^/portal_\S+/|(/\S+)*/(portlet_image|image_mini|@@r(ight-column|efreshPortlet)|\S+\.(css|gif|jpg|jpeg|png|pdf|kss|js|xls|doc)))')
+IGNORE = re.compile('(^/_log.*|^/lo(gin_f(orm|ailed)|gged_out|gout).*|^/eli/@@whoami|^/@@(idmintegration|esi/|frontpage_view).*|^/acl_users/.*|^/portal_[^/]+/|(/[^/]+)*/(portlet_image|image_mini|@@r(ight-column|efreshPortlet)|[^/]+\.(css|gif|jpg|jpeg|png|pdf|kss|js|xls|xsl|doc)))')
+
+REWRITE = re.compile('^(/(nordic|(central|southern)-europe|uk)/(elkjop[^/]*|lefdal[^/]*|elgigant[^/]+|electro[^/]+|unieuro|dsg[^/]+|gigantti[^/]*|pc-[^/]*))?(?P<url>/[^\?]*)(\?.*)?')
 
 class FrequentRequests(object):
     def __init__(self):
@@ -15,6 +17,7 @@ class FrequentRequests(object):
         url, user = data.get('url', None), data.get('reqcookie', None)
         if IGNORE.match(url):
             return # Bail immediately on irrelevant URLs
+        url = REWRITE.sub('\g<url>', url)
         count, users = self.urlkey.get(url, (0,set()))
         users.add(user)
         self.urlkey[url] = (count + 1, users)
