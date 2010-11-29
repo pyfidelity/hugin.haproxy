@@ -4,7 +4,7 @@ from operator import itemgetter
 
 LIMIT = 10 # Use 3 * LIMIT internally
 
-IGNORE = re.compile('(^/_log.*|^/login_form.*|^/eli/@@whoami|^/@@esi/.*|^/acl_users/.*|^/portal_\S+/|(/\S+)/@@r(ight-column|efreshPortlet))')
+IGNORE = re.compile('(^/_log.*|^/lo(gin_form|gged_out|gout).*|^/eli/@@whoami|^/@@(esi/|frontpage_view).*|^/acl_users/.*|^/portal_\S+/|(/\S+)/@@r(ight-column|efreshPortlet))')
 
 class FrequentRequests(object):
     def __init__(self):
