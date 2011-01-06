@@ -12,7 +12,7 @@ from hugin.haproxy.filters import clickpath
 
 from hugin.haproxy import keyedfilters
 
-from fileinput import input
+from fileinput import input, hook_compressed
 from optparse import OptionParser
 
 import logging
@@ -77,7 +77,7 @@ def main():
                 print k, ',\t'.join(['%s:%d' % (k,v) for k,v in f.stats().items()])
 
 
-    f = input(filter(None, [options.filename]))
+    f = input(filter(None, [options.filename]), openhook=hook_compressed)
     start = time.time()
     count = 0
     hour = 0
