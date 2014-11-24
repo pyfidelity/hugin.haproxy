@@ -164,7 +164,9 @@ class GoalAnalyser(object):
                 self.statscounters[destination].process(entry, day)
                 fn = self.log_entries.get(destination)
                 if fn is not None:
-                    self.files[fn].write(LOG_FORMAT.format(**entry))
+                    entry_info = dict(entry)
+                    entry_info['querystring'] = entry_info['querystring'] or ''
+                    self.files[fn].write(LOG_FORMAT.format(**entry_info))
             for name in self.urls:
                 # Don't duplicate dates in csv file
                 if day.isoformat() in set(sum(existing.values(), [])):
