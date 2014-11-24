@@ -3,7 +3,6 @@ import re, warnings
 # XXX BLACKLIST SHOULD BE SET IN CONFIG
 blacklist = ('/haproxy-status',)
 blacklist = '|'.join(blacklist)
-blacklist = '(?!(%s))' % blacklist
 
 syslogdprefix = '(?:\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\+\d{4} \[\S+ \S+] )?'
 pattsyslogd = '(?:<(?P<syslog>\d+)>)?(?:\w{3}\s[\s\d]\d \d{2}:\d{2}:\d{2}(?: \S+)? (?P<pid>\S+): )?'
@@ -14,7 +13,7 @@ pattterm = '(?P<terminationevent>\S)(?P<sessionstate>\S)(?P<pc>\S)(?P<opc>\S) '
 pattconn = '(?P<actconn>\d+)/(?P<feconn>\d+)/(?P<beconn>\d+)/(?P<srv_conn>\d+)(/(?P<retries>[-\+\d]+))? '
 pattqueue = '(?P<srv_queue>\d+)/(?P<listener_queue>\d+) '
 pattcaptures = '({(?P<captures>[^}]*)\} )?'
-patturl = '"(?P<method>\S+) (?:/VirtualHostBase/.*/VirtualHostRoot)?' + blacklist + '(?P<url>\S*/(?P<template>[^/][^\?]+)?)?(?P<querystring>\?\S*)? \S+"'
+patturl = '"(?P<method>\S+) (?:/VirtualHostBase/.*/VirtualHostRoot)?' + '(?P<url>\S*/(?P<template>[^/][^\?]+)?)?(?P<querystring>\?\S*)? \S+"'
 
 DATE_FORMAT = "%d/%b/%Y:%H:%M:%S.%f"
 
@@ -22,6 +21,7 @@ class logparser(object):
     def __init__(self):
         self.pattern = syslogdprefix + pattsyslogd + pattinfo + patttiming + patthttp + pattterm + pattconn + pattqueue + pattcaptures + patturl
         self.regex = re.compile(self.pattern)
+        self.blacklist = re.compile(blacklist)
 
     def list_variables(self):
         return re.findall('P<([^>]+)>', self.pattern)
@@ -36,6 +36,8 @@ class logparser(object):
         res = self.regex.match(line)
         if res is not None:
             res = res.groupdict()
+            if self.blacklist.match(res['url']):
+                return
             for i in ('Tq', 'Tw', 'Tc', 'Tr', 'Tt'):
                 try:
                     res[i] = int(res[i])
