@@ -50,7 +50,7 @@ class DailyStatistics(object):
         length = len(data)
         values['%ddlength' % days] = length
         values['%ddavg' % days] = sum(data) / length if length else 0
-        values['%ddstddev' % days] = numpy.std(numpy.array(data))
+        values['%ddstddev' % days] = numpy.std(numpy.array(data)) if length else 0
         for p in range(10, 101, 10):
             values['%dd%d' % (days, p)] = valueForPercentile(data, p)
         return values
